@@ -1,2 +1,0 @@
-# mrnaths-portfolio
-Creative Designer
