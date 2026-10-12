@@ -221,7 +221,27 @@ function renderProjects(category = "All") {
         return;
     }
 
-    filteredProjects.forEach(project => {
+    let projectsToDisplay = filteredProjects;
+
+    // On "All", show only the newest project from each category.
+    // Clicking a specific category shows every project in it.
+    if (category === "All") {
+        const seenCategories = new Set();
+
+        projectsToDisplay = filteredProjects.filter(project => {
+            const projectCategory =
+                normalizeCategory(project.category) || "Uncategorized";
+
+            if (seenCategories.has(projectCategory)) {
+                return false;
+            }
+
+            seenCategories.add(projectCategory);
+            return true;
+        });
+    }
+
+    projectsToDisplay.forEach(project => {
         const card = document.createElement("div");
 
         card.className = "project-card";
@@ -249,6 +269,7 @@ function renderProjects(category = "All") {
         info.append(title, description, categoryLabel);
         card.append(image, info);
 
+        // Open the full-size image when clicked.
         image.addEventListener("click", () => {
             openLightbox(project.image);
         });
@@ -258,6 +279,7 @@ function renderProjects(category = "All") {
 
     refreshAOS();
 }
+
 
 portfolioButtons.forEach(button => {
     button.addEventListener("click", () => {
