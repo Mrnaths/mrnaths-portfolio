@@ -1442,4 +1442,16 @@ p{
         line-height: 1.8;
     }
 }
+.hero-image {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
 
+.hero-image img {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+}
