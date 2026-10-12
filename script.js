@@ -346,46 +346,7 @@ function renderProjects(category = "All") {
     });
 
     refreshAOS();
-}
 
-
-    projectsToDisplay.forEach(project => {
-        const card = document.createElement("div");
-
-        card.className = "project-card";
-        card.setAttribute("data-aos", "zoom-in");
-
-        const image = document.createElement("img");
-        image.src = project.image;
-        image.alt = project.title || "Portfolio design";
-        image.loading = "lazy";
-
-        const info = document.createElement("div");
-        info.className = "project-info";
-
-        const title = document.createElement("h3");
-        title.textContent = project.title || "Untitled Project";
-
-        const description = document.createElement("p");
-        description.textContent = project.description || "";
-
-        const categoryLabel = document.createElement("span");
-        categoryLabel.className = "project-category";
-        categoryLabel.textContent =
-            normalizeCategory(project.category) || "Uncategorized";
-
-        info.append(title, description, categoryLabel);
-        card.append(image, info);
-
-        // Open the full-size image when clicked.
-        image.addEventListener("click", () => {
-            openLightbox(project.image);
-        });
-
-        gallery.appendChild(card);
-    });
-
-    refreshAOS();
 }
 
 
