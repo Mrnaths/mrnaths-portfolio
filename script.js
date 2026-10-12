@@ -200,6 +200,7 @@ async function loadProjects() {
     renderProjects(currentCategory);
 }
 
+
 function renderProjects(category = "All") {
     if (!gallery) return;
 
@@ -221,25 +222,132 @@ function renderProjects(category = "All") {
         return;
     }
 
-    let projectsToDisplay = filteredProjects;
+    // Group projects by their existing database categories.
+    const groups = new Map();
 
-    // On "All", show only the newest project from each category.
-    // Clicking a specific category shows every project in it.
-    if (category === "All") {
-        const seenCategories = new Set();
+    filteredProjects.forEach(project => {
+        const name =
+            normalizeCategory(project.category) || "Uncategorized";
 
-        projectsToDisplay = filteredProjects.filter(project => {
-            const projectCategory =
-                normalizeCategory(project.category) || "Uncategorized";
+        if (!groups.has(name)) {
+            groups.set(name, []);
+        }
 
-            if (seenCategories.has(projectCategory)) {
-                return false;
+        groups.get(name).push(project);
+    });
+
+    groups.forEach((projects, categoryName) => {
+        const section = document.createElement("details");
+        section.className = "portfolio-category";
+
+        const heading = document.createElement("summary");
+
+        const title = document.createElement("h3");
+        title.className = "portfolio-category-title";
+        title.textContent = categoryName;
+
+        const count = document.createElement("span");
+        count.className = "portfolio-category-count";
+        count.textContent =
+            `${projects.length} ${projects.length === 1 ? "design" : "designs"}`;
+
+        heading.append(title, count);
+
+        // Show the newest project as the featured design.
+        const featured = document.createElement("div");
+        featured.className = "portfolio-featured";
+
+        const featuredProject = projects[0];
+        const featuredImage = document.createElement("img");
+
+        featuredImage.src = featuredProject.image;
+        featuredImage.alt = featuredProject.title || categoryName;
+        featuredImage.loading = "lazy";
+
+        const featuredInfo = document.createElement("div");
+        featuredInfo.className = "portfolio-featured-info";
+
+        const featuredTitle = document.createElement("h4");
+        featuredTitle.textContent =
+            featuredProject.title || "Untitled Project";
+
+        featuredInfo.appendChild(featuredTitle);
+
+        if (featuredProject.description) {
+            const description = document.createElement("p");
+            description.textContent = featuredProject.description;
+            featuredInfo.appendChild(description);
+        }
+
+        featured.append(featuredImage, featuredInfo);
+        heading.appendChild(featured);
+
+        // Remaining designs appear when the category expands.
+        const remaining = document.createElement("div");
+        remaining.className = "portfolio-expanded-grid";
+
+        projects.slice(1).forEach(project => {
+            const card = document.createElement("article");
+            card.className = "project-card";
+
+            const image = document.createElement("img");
+            image.src = project.image;
+            image.alt = project.title || categoryName;
+            image.loading = "lazy";
+
+            const info = document.createElement("div");
+            info.className = "project-info";
+
+            const projectTitle = document.createElement("h4");
+            projectTitle.textContent =
+                project.title || "Untitled Project";
+
+            info.appendChild(projectTitle);
+
+            if (project.description) {
+                const description = document.createElement("p");
+                description.textContent = project.description;
+                info.appendChild(description);
             }
 
-            seenCategories.add(projectCategory);
-            return true;
+            card.append(image, info);
+            remaining.appendChild(card);
+
+            image.addEventListener("click", event => {
+                event.stopPropagation();
+                openLightbox(project.image);
+            });
         });
-    }
+
+        // Clicking an image opens the lightbox, not the category.
+        featuredImage.addEventListener("click", event => {
+            event.stopPropagation();
+            openLightbox(featuredProject.image);
+        });
+
+        section.append(heading);
+
+        if (projects.length > 1) {
+            const toggle = document.createElement("div");
+            toggle.className = "portfolio-expand-label";
+            toggle.textContent = "View all designs ↓";
+
+            heading.appendChild(toggle);
+            section.appendChild(remaining);
+
+            section.addEventListener("toggle", () => {
+                toggle.textContent = section.open
+                    ? "Show less ↑"
+                    : "View all designs ↓";
+            });
+        }
+
+        gallery.appendChild(section);
+    });
+
+    refreshAOS();
+}
+
 
     projectsToDisplay.forEach(project => {
         const card = document.createElement("div");
