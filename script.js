@@ -123,94 +123,154 @@ if (scrollTop) {
     });
 
 }
+
+
 /* ==========================================
-   LOAD PROJECTS
+   LOAD PROJECTS & PORTFOLIO FILTERS
 ========================================== */
 
-async function loadProjects(category = "All") {
+const portfolioButtons = document.querySelectorAll(
+    ".portfolio-filter [data-category]"
+);
 
+let allProjects = [];
+let currentCategory = "All";
+
+function normalizeCategory(category = "") {
+    const value = category
+        .toLowerCase()
+        .trim()
+        .replace(/[-_]+/g, " ")
+        .replace(/\s+/g, " ");
+
+    const categories = {
+        "all": "All",
+
+        "branding": "Branding",
+        "brand identity": "Branding",
+        "brand design": "Branding",
+
+        "logo": "Logo Design",
+        "logos": "Logo Design",
+        "logo design": "Logo Design",
+
+        "print": "Print Design",
+        "print design": "Print Design",
+        "business card": "Print Design",
+        "business cards": "Print Design",
+        "brochure": "Print Design",
+        "brochures": "Print Design",
+
+        "social media": "Social Media",
+        "social media design": "Social Media",
+        "social media flyer": "Social Media",
+        "social media flyers": "Social Media",
+        "instagram post": "Social Media",
+        "facebook post": "Social Media",
+
+        "advertising": "Advertising",
+        "advert": "Advertising",
+        "ad design": "Advertising",
+        "advert design": "Advertising",
+        "advertisement": "Advertising",
+        "advertisements": "Advertising"
+    };
+
+    return categories[value] || category.trim();
+}
+
+async function loadProjects() {
     if (!gallery) return;
 
     gallery.innerHTML = "<p>Loading projects...</p>";
 
-    let query = supabase
+    const { data, error } = await supabase
         .from("projects")
         .select("*")
         .order("created_at", { ascending: false });
 
-    if (category !== "All") {
-        query = query.eq("category", category);
-    }
-
-    const { data: projects, error } = await query;
-
     if (error) {
-        console.error(error);
-        gallery.innerHTML = "<p>Unable to load projects.</p>";
+        console.error("Unable to load projects:", error);
+        gallery.innerHTML =
+            "<p>Unable to load projects. Please try again later.</p>";
         return;
     }
 
-    if (!projects || projects.length === 0) {
-        gallery.innerHTML = "<p>No projects found.</p>";
-        return;
-    }
+    allProjects = data || [];
+    renderProjects(currentCategory);
+}
 
+function renderProjects(category = "All") {
+    if (!gallery) return;
+
+    currentCategory = category;
     gallery.innerHTML = "";
 
-    projects.forEach(project => {
+    const filteredProjects = category === "All"
+        ? allProjects
+        : allProjects.filter(project =>
+            normalizeCategory(project.category) === category
+        );
 
+    if (!filteredProjects.length) {
+        gallery.innerHTML = `
+            <p class="portfolio-empty">
+                No projects found in ${category}.
+            </p>
+        `;
+        return;
+    }
+
+    filteredProjects.forEach(project => {
         const card = document.createElement("div");
 
         card.className = "project-card";
         card.setAttribute("data-aos", "zoom-in");
 
-        card.innerHTML = `
-            <img src="${project.image}" alt="${project.title}">
+        const image = document.createElement("img");
+        image.src = project.image;
+        image.alt = project.title || "Portfolio design";
+        image.loading = "lazy";
 
-            <div class="project-info">
+        const info = document.createElement("div");
+        info.className = "project-info";
 
-                <h3>${project.title}</h3>
+        const title = document.createElement("h3");
+        title.textContent = project.title || "Untitled Project";
 
-                <p>${project.description || ""}</p>
+        const description = document.createElement("p");
+        description.textContent = project.description || "";
 
-                <span class="project-category">
-                    ${project.category}
-                </span>
+        const categoryLabel = document.createElement("span");
+        categoryLabel.className = "project-category";
+        categoryLabel.textContent =
+            normalizeCategory(project.category) || "Uncategorized";
 
-            </div>
-        `;
+        info.append(title, description, categoryLabel);
+        card.append(image, info);
 
-        card.querySelector("img").addEventListener("click", () => {
+        image.addEventListener("click", () => {
             openLightbox(project.image);
         });
 
         gallery.appendChild(card);
-
     });
 
     refreshAOS();
-
 }
 
-/* ==========================================
-   PORTFOLIO FILTER
-========================================== */
-
-document.querySelectorAll("[data-category]").forEach(button => {
-
+portfolioButtons.forEach(button => {
     button.addEventListener("click", () => {
-
-        document
-            .querySelectorAll("[data-category]")
-            .forEach(btn => btn.classList.remove("active"));
+        portfolioButtons.forEach(item =>
+            item.classList.remove("active")
+        );
 
         button.classList.add("active");
 
-        loadProjects(button.dataset.category);
-
+        renderProjects(button.dataset.category);
     });
-
 });
+
 
 /* ==========================================
    CONTACT FORM
