@@ -2255,3 +2255,44 @@ padding: 32px 18px 42px;
 }
 
 }
+/* FIX: Keep the full hero image visible on mobile and desktop */
+.hero-showcase,
+.hero-image-container,
+.hero-visual {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.hero-showcase img,
+.hero-image-container img,
+.hero-visual img,
+.hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: none;
+    object-fit: contain;
+    object-position: center top;
+}
+
+/* Mobile adjustment */
+@media (max-width: 768px) {
+    .hero-showcase,
+    .hero-image-container,
+    .hero-visual {
+        height: auto;
+        padding-top: 0;
+    }
+
+    .hero-showcase img,
+    .hero-image-container img,
+    .hero-visual img,
+    .hero img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        object-position: center top;
+    }
+}
