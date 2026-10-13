@@ -2072,3 +2072,186 @@ p{
         line-height: 1.7;
     }
 }
+/* =========================================
+HERO SECTION — RESPONSIVE POLISH
+Brand colors: Burgundy and Gold
+========================================= */
+
+:root {
+--brand-burgundy: #5B1020;
+--brand-gold: #FFD166;
+}
+
+/* Keep the hero content visually connected */
+.hero {
+position: relative;
+overflow: hidden;
+padding: 55px 20px 65px;
+background-color: var(--brand-burgundy);
+color: #fff;
+}
+
+/* Keep the content centered and prevent excessive width */
+.hero .container {
+width: 100%;
+max-width: 1100px;
+margin: 0 auto;
+position: relative;
+z-index: 1;
+}
+
+/* Introduction */
+.hero h1 {
+margin: 12px 0 18px;
+line-height: 1.12;
+overflow-wrap: break-word;
+}
+
+.hero h2 {
+margin: 0 0 22px;
+line-height: 1.25;
+}
+
+.hero p {
+max-width: 720px;
+margin: 0 auto 28px;
+line-height: 1.7;
+}
+
+/* Keep the buttons compact and balanced */
+.hero .hero-buttons,
+.hero .hero-btns,
+.hero .cta-buttons {
+display: flex;
+justify-content: center;
+align-items: center;
+flex-wrap: wrap;
+gap: 14px;
+margin: 28px auto;
+}
+
+.hero .hero-buttons a,
+.hero .hero-btns a,
+.hero .cta-buttons a {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-height: 52px;
+width: auto;
+min-width: 155px;
+padding: 14px 25px;
+border-radius: 50px;
+box-sizing: border-box;
+font-size: 16px;
+font-weight: 700;
+line-height: 1.2;
+text-align: center;
+text-decoration: none;
+}
+
+/* Gold primary button */
+.hero .hero-buttons a:first-child,
+.hero .hero-btns a:first-child,
+.hero .cta-buttons a:first-child {
+background: var(--brand-gold);
+color: var(--brand-burgundy);
+border: 2px solid var(--brand-gold);
+}
+
+/* Outlined secondary button */
+.hero .hero-buttons a:last-child,
+.hero .hero-btns a:last-child,
+.hero .cta-buttons a:last-child {
+background: transparent;
+color: #fff;
+border: 2px solid var(--brand-gold);
+}
+
+/* Social media links */
+.hero .social-links,
+.hero .hero-socials,
+.hero .social-icons {
+display: flex;
+align-items: center;
+justify-content: center;
+flex-wrap: wrap;
+gap: 12px;
+margin: 28px auto 0;
+}
+
+.hero .social-links a,
+.hero .hero-socials a,
+.hero .social-icons a {
+width: 48px;
+height: 48px;
+min-width: 48px;
+border: 1.5px solid var(--brand-gold);
+border-radius: 50%;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+color: var(--brand-gold);
+font-size: 20px;
+box-sizing: border-box;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+.hero {
+padding: 32px 18px 42px;
+}
+
+.hero h1 {
+    font-size: clamp(34px, 9vw, 48px);
+    margin-bottom: 14px;
+}
+
+.hero h2 {
+    font-size: clamp(23px, 6vw, 30px);
+    margin-bottom: 18px;
+}
+
+.hero p {
+    font-size: 16px;
+    line-height: 1.75;
+    margin-bottom: 22px;
+}
+
+.hero .hero-buttons,
+.hero .hero-btns,
+.hero .cta-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
+    margin: 22px auto;
+}
+
+.hero .hero-buttons a,
+.hero .hero-btns a,
+.hero .cta-buttons a {
+    width: 100%;
+    min-width: 0;
+    min-height: 50px;
+    padding: 12px 8px;
+    font-size: 14px;
+    border-radius: 14px;
+}
+
+.hero .social-links,
+.hero .hero-socials,
+.hero .social-icons {
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.hero .social-links a,
+.hero .hero-socials a,
+.hero .social-icons a {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    font-size: 18px;
+}
+
+}
